@@ -8,7 +8,6 @@ public class Menu implements MenuService {
     private Scanner scanner = new Scanner(System.in);
 
     public Menu() {
-        // Konstruktor kan innehålla ytterligare initialisering om nödvändigt
     }
 
     @Override

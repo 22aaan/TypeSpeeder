@@ -70,7 +70,6 @@ public class MyRunner implements CommandLineRunner {
         Optional<Anvandare> loggedInUserOptional = userService.loginUser(username, password);
         if (loggedInUserOptional.isPresent()) {
             Anvandare loggedInUser = loggedInUserOptional.get();
-            // Sätt currentAnvandarnamn till det lyckade inloggningsnamnet
             this.currentAnvandarnamn = loggedInUser.getAnvandarnamn();
             System.out.println("Inloggningen lyckades!");
             selectLanguage(scanner);
@@ -81,71 +80,74 @@ public class MyRunner implements CommandLineRunner {
     }
 
     private void selectLanguage(Scanner scanner) {
-        System.out.println("Välj språk: 1. Svenska, 2. Engelska");
-        String languageChoice = scanner.nextLine();
-        Locale locale;
-        switch (languageChoice) {
-            case "1":
-                locale = new Locale("sv", "SE");
-                break;
-            case "2":
-                locale = new Locale("en", "US");
-                break;
-            default:
-                System.out.println("Ogiltigt val, standardinställning Svenska används.");
-                locale = new Locale("sv", "SE");
-        }
+        System.out.println("1. English\n2. Svenska");
+        String choice = scanner.nextLine();
+        Locale locale = "1".equals(choice) ? new Locale("en", "US") : new Locale("sv", "SE");
         messages = ResourceBundle.getBundle("MessagesBundle", locale);
     }
 
+
     private void showGameMenu(Scanner scanner, String spelnamn) {
-        System.out.println("Välkommen " + spelnamn + "!");
+        System.out.println(messages.getString("welcomeGame") + " " + spelnamn + "!");
         boolean stayInMenu = true;
         while (stayInMenu) {
-            System.out.println("\nVälj ett alternativ:");
-            System.out.println("1. Starta ordutmaning");
-            System.out.println("2. Starta räkneutmaning");
-            System.out.println("3. Uppdatera konto");
-            System.out.println("4. Visa poäng");
-            System.out.println("5. Logga ut");
-            System.out.print("Ditt val: ");
+            System.out.println(messages.getString("chooseOption"));
+            System.out.println("1. " + messages.getString("startWordChallenge"));
+            System.out.println("2. " + messages.getString("startCountChallenge"));
+            System.out.println("3. " + messages.getString("updateAccount"));
+            System.out.println("4. " + messages.getString("showScore"));
+            System.out.println("5. " + messages.getString("logout"));
+            System.out.print(messages.getString("yourChoice"));
             String choice = scanner.nextLine();
 
             switch (choice) {
                 case "1":
-                    WordChallenge wordChallenge = new WordChallenge(messages);
-                    wordChallenge.startChallenge();
+                    startWordChallenge(); // Se till att denna metod använder ResourceBundle för dess texter också
                     break;
                 case "2":
-                    CountChallenge countChallenge = new CountChallenge(messages);
-                    countChallenge.startChallenge();
+                    startCountChallenge(); // Samma här, se till att använda ResourceBundle
                     break;
                 case "3":
-                    updateAccount(scanner, currentAnvandarnamn);
-
+                    updateAccount(scanner);
                     break;
                 case "4":
-                    // Implementera visning av poäng här
+                    showScore();
                     break;
                 case "5":
-                    System.out.println("Loggar ut...");
+                    System.out.println(messages.getString("loggingOut"));
                     stayInMenu = false;
                     break;
                 default:
-                    System.out.println("Ogiltigt val.");
+                    System.out.println(messages.getString("invalidChoice"));
                     break;
             }
         }
     }
+    private void startWordChallenge() {
+        WordChallenge wordChallenge = new WordChallenge(messages);
+        wordChallenge.startChallenge();
+    }
 
-    private void updateAccount(Scanner scanner, String currentAnvandarnamn) {
+    private void startCountChallenge() {
+        CountChallenge countChallenge = new CountChallenge(messages);
+        countChallenge.startChallenge();
+    }
+
+    private void showScore() {
+        // Implementera logiken för att visa användarens poäng
+        // Detta kan innebära att hämta poänginformation från en databas eller annan källa och sedan visa den
+    }
+
+
+
+    private void updateAccount(Scanner scanner) {
         System.out.println("Vad vill du uppdatera?");
         System.out.println("1. Användarnamn");
         System.out.println("2. Spelnamn");
         System.out.println("3. Lösenord");
         String choice = scanner.nextLine();
 
-        // Här hämtar vi den aktuella användaren baserat på användarnamnet
+        // Hämta den aktuella användaren baserat på det aktuella användarnamnet
         Optional<Anvandare> currentUserOptional = userService.findByAnvandarnamn(currentAnvandarnamn);
         if (currentUserOptional.isPresent()) {
             Anvandare currentUser = currentUserOptional.get();
@@ -185,6 +187,4 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("Användaren finns inte.");
         }
     }
-
-
 }
