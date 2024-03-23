@@ -1,6 +1,10 @@
 package se.ju23.typespeeder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class WordChallenge {
@@ -9,20 +13,22 @@ public class WordChallenge {
     private final ResourceBundle messages;
     private final List<String> swedishWords = List.of("fotboll", "handboll", "basket", "volleyboll", "golf", "tennis", "bordtennis", "badminton", "baseboll", "rugby");
     private final List<String> englishWords = List.of("soccer", "handball", "basketball", "volleyball", "golf", "tennis", "table tennis", "badminton", "baseball", "rugby");
+    private final Anvandare currentUser;
 
-    public WordChallenge(ResourceBundle messages) {
+    public WordChallenge(ResourceBundle messages, Anvandare user) {
         this.messages = messages;
+        this.currentUser = user;
     }
 
     public void startChallenge() {
         System.out.println(messages.getString("selectDifficulty"));
-        int levelChoice = scanner.nextInt();
-        scanner.nextLine(); // Läs in radslutet efter int-input
+        int levelChoice = Integer.parseInt(scanner.nextLine());
+        int pointsToAdd = 0, pointsToDeduct = 0;
 
         int wordsToGuess = switch (levelChoice) {
-            case 1 -> 1;
-            case 2 -> 2;
-            case 3 -> 4;
+            case 1 -> { pointsToAdd = 1; pointsToDeduct = 1; yield 1; }
+            case 2 -> { pointsToAdd = 2; pointsToDeduct = 1; yield 2; }
+            case 3 -> { pointsToAdd = 4; pointsToDeduct = 2; yield 4; }
             default -> {
                 System.out.println(messages.getString("invalidChoice"));
                 yield -1;
@@ -35,27 +41,25 @@ public class WordChallenge {
         Collections.shuffle(words);
 
         List<String> targetWords = words.subList(0, wordsToGuess);
-        String displayString = words.stream()
-                .map(word -> targetWords.contains(word) ? "(" + word + ")" : word)
-                .collect(Collectors.joining(" "));
+        String displayString = targetWords.stream().collect(Collectors.joining(", "));
 
         System.out.println(messages.getString("writeMarkedWords"));
         System.out.println(displayString);
 
         long startTime = System.currentTimeMillis();
-
-        // Användaren matar in sina gissningar
         String userResponse = scanner.nextLine().trim();
-        List<String> userWords = Arrays.asList(userResponse.split("\\s*,\\s*"));
+        List<String> userWords = List.of(userResponse.split("\\s*,\\s*"));
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 1000;
 
-        boolean allCorrect = userWords.size() == targetWords.size() && userWords.containsAll(targetWords);
-
-        if (allCorrect) {
+        if (userWords.containsAll(targetWords) && targetWords.containsAll(userWords)) {
+            currentUser.addPoang(pointsToAdd);
             System.out.println(messages.getString("correctAnswer") + " " + messages.getString("completedIn") + " " + duration + " " + messages.getString("seconds"));
         } else {
-            System.out.println(messages.getString("wrongAnswer") + ": " + String.join(", ", targetWords));
+            currentUser.removePoints(pointsToDeduct);
+            System.out.println(messages.getString("wrongAnswer") + " " + String.join(", ", targetWords));
         }
+        // Flytta "Grattis" och "Your total score" meddelanden hit om de genereras efter poänguppdateringen
+        System.out.println("Your total score is now: " + currentUser.getPoang());
     }
 }

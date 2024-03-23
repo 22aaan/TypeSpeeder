@@ -10,6 +10,7 @@ public class UserService {
     @Autowired
     private AnvandareRepository anvandareRepository;
 
+    // Registrerar en ny användare om användarnamnet inte redan finns.
     public boolean registerUser(String anvandarnamn, String losenord, String spelnamn) {
         if (anvandareRepository.existsByAnvandarnamn(anvandarnamn)) {
             return false; // Användarnamnet är redan taget
@@ -17,17 +18,20 @@ public class UserService {
 
         Anvandare nyAnvandare = new Anvandare();
         nyAnvandare.setAnvandarnamn(anvandarnamn);
-        nyAnvandare.setLosenord(losenord);
+        nyAnvandare.setLosenord(losenord); // Notera: Lösenord bör hashas för säker lagring
         nyAnvandare.setSpelnamn(spelnamn);
+        nyAnvandare.setPoang(0); // Initialt sätta användarens poäng till 0
 
         anvandareRepository.save(nyAnvandare);
         return true;
     }
 
+    // Försöker logga in en användare med angivet användarnamn och lösenord.
     public Optional<Anvandare> loginUser(String username, String password) {
         return anvandareRepository.findByAnvandarnamnAndLosenord(username, password);
     }
 
+    // Uppdaterar en användares information baserat på användarID.
     public boolean updateUser(Long anvandarID, String newAnvandarnamn, String newLosenord, String newSpelnamn) {
         Optional<Anvandare> anvandareOptional = anvandareRepository.findById(anvandarID);
         if (anvandareOptional.isPresent()) {
@@ -36,7 +40,7 @@ public class UserService {
                 anvandare.setAnvandarnamn(newAnvandarnamn);
             }
             if (newLosenord != null && !newLosenord.isEmpty()) {
-                anvandare.setLosenord(newLosenord);
+                anvandare.setLosenord(newLosenord); // Notera: Lösenord bör hashas
             }
             if (newSpelnamn != null && !newSpelnamn.isEmpty()) {
                 anvandare.setSpelnamn(newSpelnamn);
@@ -47,8 +51,13 @@ public class UserService {
         return false;
     }
 
+    // Söker efter en användare baserat på användarnamnet.
     public Optional<Anvandare> findByAnvandarnamn(String anvandarnamn) {
         return anvandareRepository.findByAnvandarnamn(anvandarnamn);
     }
 
+    // Sparar en användare till databasen. Används för att uppdatera befintlig användarinformation, inklusive poäng.
+    public void saveUser(Anvandare anvandare) {
+        anvandareRepository.save(anvandare);
+    }
 }

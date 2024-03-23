@@ -2,11 +2,10 @@ package se.ju23.typespeeder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "anvandare")
@@ -25,7 +24,17 @@ public class Anvandare {
     @Column(name = "Spelnamn", nullable = false)
     private String spelnamn;
 
-    // ... övriga fält och metoder ...
+    @Column(name = "poang")
+    private Integer poang = 0;
+    @Column(name = "level")
+    private Integer level = 1; // Nytt fält för användarens nivå
+
+    // Standardkonstruktorer, getters och setters
+    public Anvandare() {
+        // Default constructor with initialized fields to avoid null values
+        this.poang = 0;
+        this.level = 1;
+    }
 
     public Long getAnvandarID() {
         return anvandarID;
@@ -59,5 +68,59 @@ public class Anvandare {
         this.spelnamn = spelnamn;
     }
 
-    // ... getters och setters för övriga fält ...
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getPoang() {
+        return poang;
+    }
+
+    public void setPoang(int poang) {
+        this.poang = poang;
+    }
+
+    public void addPoang(int additionalPoints) {
+        this.poang += additionalPoints;
+        updateLevel();
+    }
+
+    private void updateLevel() {
+        if (this.poang == null) {
+            this.poang = 0; // Ensure poang is not null.
+        }
+        if (this.level == null) {
+            this.level = 1; // Ensure level is not null.
+        }
+
+        int newLevel = 1 + this.poang / 6;
+        if (newLevel > this.level) {
+            this.level = newLevel;
+            System.out.println("Grattis! Du har nått level " + this.level);
+        }
+    }
+    public void removePoints(int pointsToRemove) {
+        if (this.poang == null) {
+            this.poang = 0;
+        }
+        this.poang = Math.max(this.poang - pointsToRemove, 0); // Säkerställ att poäng inte går under 0
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "Anvandare{" +
+                "anvandarID=" + anvandarID +
+                ", anvandarnamn='" + anvandarnamn + '\'' +
+                ", losenord='" + losenord + '\'' +
+                ", spelnamn='" + spelnamn + '\'' +
+                ", poang=" + poang +
+                ", level=" + level +
+                '}';
+    }
 }

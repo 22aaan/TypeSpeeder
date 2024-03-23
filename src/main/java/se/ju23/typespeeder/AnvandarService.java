@@ -1,11 +1,17 @@
 package se.ju23.typespeeder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
 public class AnvandarService {
+
+    @Autowired
+    private AnvandareRepository anvandareRepository;
 
     // Metod för att kontrollera om ett användarnamn redan finns
     public boolean isAnvandarnamnUnique(String anvandarnamn) {
-        // Här skulle du implementera en sökning i din databas för att se om användarnamnet redan finns
-        return true; // Anta att den är unik för detta exempel
+        return !anvandareRepository.existsByAnvandarnamn(anvandarnamn);
     }
 
     // Metod för att registrera en ny användare
@@ -20,8 +26,9 @@ public class AnvandarService {
         nyAnvandare.setAnvandarnamn(anvandarnamn);
         nyAnvandare.setLosenord(losenord); // Notera: du bör hasha lösenordet innan lagring i en riktig applikation
         nyAnvandare.setSpelnamn(spelnamn);
+        nyAnvandare.setPoang(0); // Initial poäng
 
-        // Här skulle du spara den nya användaren i din databas
+        anvandareRepository.save(nyAnvandare); // Spara den nya användaren i databasen
         System.out.println("Ny användare registrerad med användarnamn: " + anvandarnamn);
 
         return true;

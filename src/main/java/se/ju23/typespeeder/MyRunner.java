@@ -14,7 +14,9 @@ public class MyRunner implements CommandLineRunner {
     @Autowired
     private UserService userService;
     private ResourceBundle messages;
-    private String currentAnvandarnamn; // Deklarera variabeln här
+    private String currentAnvandarnamn;
+    private Anvandare currentUser;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -69,15 +71,18 @@ public class MyRunner implements CommandLineRunner {
 
         Optional<Anvandare> loggedInUserOptional = userService.loginUser(username, password);
         if (loggedInUserOptional.isPresent()) {
-            Anvandare loggedInUser = loggedInUserOptional.get();
-            this.currentAnvandarnamn = loggedInUser.getAnvandarnamn();
+            currentUser = loggedInUserOptional.get(); // Sätt currentUser till den inloggade användaren
             System.out.println("Inloggningen lyckades!");
+
+            this.currentAnvandarnamn = currentUser.getAnvandarnamn();
+
             selectLanguage(scanner);
-            showGameMenu(scanner, loggedInUser.getSpelnamn());
+            showGameMenu(scanner, currentUser.getSpelnamn()); // Använd spelnamn från currentUser
         } else {
             System.out.println("Inloggningen misslyckades, kontrollera dina uppgifter.");
         }
     }
+
 
     private void selectLanguage(Scanner scanner) {
         System.out.println("1. English\n2. Svenska");
@@ -124,18 +129,32 @@ public class MyRunner implements CommandLineRunner {
         }
     }
     private void startWordChallenge() {
-        WordChallenge wordChallenge = new WordChallenge(messages);
-        wordChallenge.startChallenge();
+        if (currentUser != null) {
+            WordChallenge wordChallenge = new WordChallenge(messages, currentUser);
+            wordChallenge.startChallenge();
+            userService.saveUser(currentUser); // Anta att denna metod sparar användaren till databasen
+        } else {
+            System.out.println("Användaren är inte inloggad.");
+        }
     }
+
 
     private void startCountChallenge() {
-        CountChallenge countChallenge = new CountChallenge(messages);
-        countChallenge.startChallenge();
+        if (currentUser != null) {
+            CountChallenge countChallenge = new CountChallenge(messages, currentUser, userService); // Nu med UserService
+            countChallenge.startChallenge();
+        } else {
+            System.out.println("Användaren är inte inloggad.");
+        }
     }
 
+
     private void showScore() {
-        // Implementera logiken för att visa användarens poäng
-        // Detta kan innebära att hämta poänginformation från en databas eller annan källa och sedan visa den
+        if (currentUser != null) {
+            System.out.println("Your current score is: " + currentUser.getPoang());
+        } else {
+            System.out.println("No user is currently logged in.");
+        }
     }
 
 
