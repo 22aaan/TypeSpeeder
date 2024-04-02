@@ -3,61 +3,83 @@ package se.ju23.typespeeder;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "speldata")
 public class Speldata {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Id
-    @Column(name = "SpelDataID", nullable = false)
-    private int spelDataId;
-    @Basic
-    @Column(name = "AnvandarID", nullable = false)
-    private int anvandarId;
-    @Basic
-    @Column(name = "Niva", nullable = false, length = 45)
-    private String niva;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "spel_dataid") // Namnet måste matcha exakt som i databasen
+    private Long spelDataID;
 
-    public int getSpelDataId() {
-        return spelDataId;
+    @ManyToOne
+    @JoinColumn(name = "anvandarid", referencedColumnName = "AnvandarID") // Båda kolumnnamnen måste matcha exakt som i databasen
+    private Anvandare anvandare;
+    @Column(name = "tid")
+    private Long tid;
+
+    @Column(name = "ratta_svar")
+    private Integer rattaSvar;
+
+    @Column(name = "svariordning")
+    private String svarIOrdning;
+
+    @Column(name = "is_correct")
+    private Boolean isCorrect;
+    @Column(name = "niva", nullable = false)
+    private Integer niva = 1;
+    // Getters och setters
+    public Long getSpelDataId() {
+        return spelDataID;
     }
 
-    public void setSpelDataId(int spelDataId) {
-        this.spelDataId = spelDataId;
+    public void setSpelDataId(Long spelDataId) {
+        this.spelDataID = spelDataId;
     }
 
-    public int getAnvandarId() {
-        return anvandarId;
+    public Anvandare getAnvandare() {
+        return anvandare;
     }
 
-    public void setAnvandarId(int anvandarId) {
-        this.anvandarId = anvandarId;
+    public void setAnvandare(Anvandare anvandare) {
+        this.anvandare = anvandare;
     }
-
-    public String getNiva() {
+    public Integer getNiva() {
         return niva;
     }
 
-    public void setNiva(String niva) {
+    public void setNiva(Integer niva) {
         this.niva = niva;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Speldata speldata = (Speldata) o;
-
-        if (spelDataId != speldata.spelDataId) return false;
-        if (anvandarId != speldata.anvandarId) return false;
-        if (niva != null ? !niva.equals(speldata.niva) : speldata.niva != null) return false;
-
-        return true;
+    public Long getTid() {
+        return tid;
     }
 
-    @Override
-    public int hashCode() {
-        int result = spelDataId;
-        result = 31 * result + anvandarId;
-        result = 31 * result + (niva != null ? niva.hashCode() : 0);
-        return result;
+    public void setTid(Long tid) {
+        this.tid = tid;
+    }
+
+    public Integer getRattaSvar() {
+        return rattaSvar;
+    }
+
+    public void setRattaSvar(Integer rattaSvar) {
+        this.rattaSvar = rattaSvar;
+    }
+
+    public String getSvarIOrdning() {
+        return svarIOrdning;
+    }
+
+    public void setSvarIOrdning(String svarIOrdning) {
+        this.svarIOrdning = svarIOrdning;
+    }
+
+    public Boolean getIsCorrect() {
+        return isCorrect;
+    }
+
+    public void setIsCorrect(Boolean isCorrect) {
+        this.isCorrect = isCorrect;
     }
 }

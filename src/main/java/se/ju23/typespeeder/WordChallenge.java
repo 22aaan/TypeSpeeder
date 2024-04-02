@@ -1,29 +1,47 @@
 package se.ju23.typespeeder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class WordChallenge {
+    @Autowired
+    private SpeldataService spelDataService;
+    private final Scanner scanner;
+    private final List<String> swedishWords;
+    private final List<String> englishWords;
+    private Anvandare currentUser;
+    private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", Locale.getDefault());
 
-    private final Scanner scanner = new Scanner(System.in);
-    private final ResourceBundle messages;
-    private final List<String> swedishWords = List.of("fotboll", "handboll", "basket", "volleyboll", "golf", "tennis", "bordtennis", "badminton", "baseboll", "rugby");
-    private final List<String> englishWords = List.of("soccer", "handball", "basketball", "volleyball", "golf", "tennis", "table tennis", "badminton", "baseball", "rugby");
-    private final Anvandare currentUser;
 
-    public WordChallenge(ResourceBundle messages, Anvandare user) {
+    @Autowired
+    public WordChallenge(SpeldataService spelDataService) {
+        this.spelDataService = spelDataService;
+        this.scanner = new Scanner(System.in);
+        this.swedishWords = List.of("fotboll", "handboll", "basket", "volleyboll", "golf", "tennis", "bordtennis", "badminton", "baseboll", "rugby");
+        this.englishWords = List.of("soccer", "handball", "basketball", "volleyball", "golf", "tennis", "table tennis", "badminton", "baseball", "rugby");
+    }
+
+    public void setCurrentUser(Anvandare currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public void setMessages(ResourceBundle messages) {
         this.messages = messages;
-        this.currentUser = user;
     }
 
     public void startChallenge() {
+        if (messages == null || currentUser == null) {
+            System.err.println("WordChallenge har inte korrekt initialiserats med alla nödvändiga beroenden.");
+            return;
+        }
+
         System.out.println(messages.getString("selectDifficulty"));
         int levelChoice = Integer.parseInt(scanner.nextLine());
         int pointsToAdd = 0, pointsToDeduct = 0;
+
 
         int wordsToGuess = switch (levelChoice) {
             case 1 -> { pointsToAdd = 1; pointsToDeduct = 1; yield 1; }
@@ -41,25 +59,37 @@ public class WordChallenge {
         Collections.shuffle(words);
 
         List<String> targetWords = words.subList(0, wordsToGuess);
-        String displayString = targetWords.stream().collect(Collectors.joining(", "));
+        String displayString = String.join(", ", targetWords);
 
         System.out.println(messages.getString("writeMarkedWords"));
         System.out.println(displayString);
 
         long startTime = System.currentTimeMillis();
         String userResponse = scanner.nextLine().trim();
-        List<String> userWords = List.of(userResponse.split("\\s*,\\s*"));
+        List<String> userWords = Arrays.asList(userResponse.split("\\s*,\\s*"));
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 1000;
 
-        if (userWords.containsAll(targetWords) && targetWords.containsAll(userWords)) {
+        boolean isCorrect = userWords.containsAll(targetWords) && targetWords.containsAll(userWords);
+        if (isCorrect) {
             currentUser.addPoang(pointsToAdd);
             System.out.println(messages.getString("correctAnswer") + " " + messages.getString("completedIn") + " " + duration + " " + messages.getString("seconds"));
         } else {
             currentUser.removePoints(pointsToDeduct);
-            System.out.println(messages.getString("wrongAnswer") + " " + String.join(", ", targetWords));
+            System.out.println(messages.getString("wrongAnswer") + ": " + String.join(", ", targetWords));
         }
-        // Flytta "Grattis" och "Your total score" meddelanden hit om de genereras efter poänguppdateringen
+
+        // Skapa och spara Speldata
+        Speldata spelData = new Speldata();
+        spelData.setAnvandare(currentUser);
+        spelData.setTid(duration);
+        spelData.setRattaSvar(isCorrect ? targetWords.size() : 0);
+        spelData.setSvarIOrdning(userResponse);
+        spelData.setIsCorrect(isCorrect);
+        spelDataService.saveSpeldata(spelData); // Se till att denna metod existerar och är korrekt implementerad
+
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }
+
+    // Eventuella ytterligare metoder som behövs för din spellogik...
 }

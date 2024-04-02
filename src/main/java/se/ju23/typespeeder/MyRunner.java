@@ -3,10 +3,8 @@ package se.ju23.typespeeder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+
+import java.util.*;
 
 @Component
 public class MyRunner implements CommandLineRunner {
@@ -16,7 +14,8 @@ public class MyRunner implements CommandLineRunner {
     private ResourceBundle messages;
     private String currentAnvandarnamn;
     private Anvandare currentUser;
-
+    @Autowired
+    private SpeldataService spelDataService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -101,16 +100,17 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("2. " + messages.getString("startCountChallenge"));
             System.out.println("3. " + messages.getString("updateAccount"));
             System.out.println("4. " + messages.getString("showScore"));
-            System.out.println("5. " + messages.getString("logout"));
+            System.out.println("5. Visa rankinglistor"); // Nytt alternativ för rankinglistor
+            System.out.println("6. " + messages.getString("logout"));
             System.out.print(messages.getString("yourChoice"));
             String choice = scanner.nextLine();
 
             switch (choice) {
                 case "1":
-                    startWordChallenge(); // Se till att denna metod använder ResourceBundle för dess texter också
+                    startWordChallenge();
                     break;
                 case "2":
-                    startCountChallenge(); // Samma här, se till att använda ResourceBundle
+                    startCountChallenge();
                     break;
                 case "3":
                     updateAccount(scanner);
@@ -119,6 +119,9 @@ public class MyRunner implements CommandLineRunner {
                     showScore();
                     break;
                 case "5":
+                    showRankingsMenu(scanner); // Hantera visning av rankinglistor
+                    break;
+                case "6":
                     System.out.println(messages.getString("loggingOut"));
                     stayInMenu = false;
                     break;
@@ -128,25 +131,33 @@ public class MyRunner implements CommandLineRunner {
             }
         }
     }
+
     private void startWordChallenge() {
         if (currentUser != null) {
-            WordChallenge wordChallenge = new WordChallenge(messages, currentUser);
+            // Här skapar vi bara WordChallenge med SpeldataService eftersom det verkar vara det den förväntar sig
+            WordChallenge wordChallenge = new WordChallenge(spelDataService);
+            wordChallenge.setCurrentUser(currentUser); // Du kanske behöver en setter-metod i WordChallenge
             wordChallenge.startChallenge();
-            userService.saveUser(currentUser); // Anta att denna metod sparar användaren till databasen
+            userService.saveUser(currentUser);
         } else {
             System.out.println("Användaren är inte inloggad.");
         }
     }
 
 
+
+
     private void startCountChallenge() {
         if (currentUser != null) {
-            CountChallenge countChallenge = new CountChallenge(messages, currentUser, userService); // Nu med UserService
+            // Autowire eller tillhandahåll beroenden som behövs av CountChallenge
+            CountChallenge countChallenge = new CountChallenge(spelDataService, userService);
+            countChallenge.setupChallenge(messages, currentUser); // Tillhandahåll övriga beroenden
             countChallenge.startChallenge();
         } else {
             System.out.println("Användaren är inte inloggad.");
         }
     }
+
 
 
     private void showScore() {
@@ -166,13 +177,11 @@ public class MyRunner implements CommandLineRunner {
         System.out.println("3. Lösenord");
         String choice = scanner.nextLine();
 
-        // Hämta den aktuella användaren baserat på det aktuella användarnamnet
         Optional<Anvandare> currentUserOptional = userService.findByAnvandarnamn(currentAnvandarnamn);
         if (currentUserOptional.isPresent()) {
             Anvandare currentUser = currentUserOptional.get();
             Long userId = currentUser.getAnvandarID();
 
-            // Antag att befintliga värden hämtas på något sätt, kanske från en inloggad användar-session.
             String newAnvandarnamn = currentAnvandarnamn;
             String newSpelnamn = ""; // Dessa bör hämtas eller vara tillgängliga för den inloggade användaren
             String newLosenord = "";
@@ -206,4 +215,39 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("Användaren finns inte.");
         }
     }
+    public void showRankingsMenu(Scanner scanner) {
+        System.out.println("Välj rankinglista att visa:");
+        System.out.println("1. Snabbhet");
+        System.out.println("2. Flest rätt");
+        System.out.println("3. Flest rätt i ordning");
+        String choice = scanner.nextLine();
+
+        switch (choice) {
+            case "1":
+                List<Speldata> speedRanking = spelDataService.getSpeedRanking();
+                System.out.println("Snabbhetsranking:");
+                for (Speldata spelData : speedRanking) {
+                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Tid: " + spelData.getTid() + " sekunder, Rätt svar: " + spelData.getRattaSvar());
+                }
+                break;
+            case "2":
+                List<Speldata> correctAnswersRanking = spelDataService.getCorrectAnswersRanking();
+                System.out.println("Ranking för flest rätt:");
+                for (Speldata spelData : correctAnswersRanking) {
+                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Rätt svar: " + spelData.getRattaSvar() + ", Tid: " + spelData.getTid() + " sekunder");
+                }
+                break;
+            case "3":
+                List<Speldata> sequentialCorrectAnswersRanking = spelDataService.getSequentialCorrectAnswersRanking();
+                System.out.println("Ranking för flest rätt i ordning:");
+                for (Speldata spelData : sequentialCorrectAnswersRanking) {
+                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Sekventiellt korrekta svar: " + spelData.getSvarIOrdning() + ", Tid: " + spelData.getTid() + " sekunder");
+                }
+                break;
+            default:
+                System.out.println("Ogiltigt val.");
+                break;
+        }
+
+}
 }

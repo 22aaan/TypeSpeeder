@@ -10,7 +10,7 @@ public class UserService {
     @Autowired
     private AnvandareRepository anvandareRepository;
 
-    // Registrerar en ny användare om användarnamnet inte redan finns.
+    private Anvandare currentUser; // Temporär lösning för att hantera nuvarande användare
     public boolean registerUser(String anvandarnamn, String losenord, String spelnamn) {
         if (anvandareRepository.existsByAnvandarnamn(anvandarnamn)) {
             return false; // Användarnamnet är redan taget
@@ -59,5 +59,13 @@ public class UserService {
     // Sparar en användare till databasen. Används för att uppdatera befintlig användarinformation, inklusive poäng.
     public void saveUser(Anvandare anvandare) {
         anvandareRepository.save(anvandare);
+    }
+    public void setCurrentUserByUsername(String username) {
+        Optional<Anvandare> userOpt = anvandareRepository.findByAnvandarnamn(username);
+        userOpt.ifPresent(user -> this.currentUser = user);
+    }
+
+    public Anvandare getCurrentUser() {
+        return this.currentUser;
     }
 }

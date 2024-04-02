@@ -1,30 +1,38 @@
 package se.ju23.typespeeder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+@Component
 public class CountChallenge {
-
+    private final SpeldataService spelDataService;
+    private final UserService userService;
     private final Scanner scanner = new Scanner(System.in);
-    private final ResourceBundle messages;
     private final Random random = new Random();
-    private final Anvandare currentUser;
-    private final UserService userService; // Antag att UserService injiceras eller tilldelas på något sätt
+    private Anvandare currentUser;
+    private ResourceBundle messages;
 
-    public CountChallenge(ResourceBundle messages, Anvandare user, UserService userService) {
+    @Autowired
+    public CountChallenge(SpeldataService spelDataService, UserService userService) {
+        this.spelDataService = spelDataService;
+        this.userService = userService;
+    }
+
+    public void setupChallenge(ResourceBundle messages, Anvandare user) {
         this.messages = messages;
         this.currentUser = user;
-        this.userService = userService;
     }
 
     public void startChallenge() {
         System.out.println(messages.getString("selectDifficulty"));
         int levelChoice = Integer.parseInt(scanner.nextLine());
-        int pointsToAdd = 0;
-        int pointsToDeduct = 0;
+        int pointsToAdd = 0, pointsToDeduct = 0;
+        int minCount = 0, maxCount = 0;
 
-        int minCount, maxCount;
         switch (levelChoice) {
             case 1:
                 minCount = 1; maxCount = 5; pointsToAdd = 1; pointsToDeduct = 1;
@@ -41,13 +49,12 @@ public class CountChallenge {
         }
 
         StringBuilder text = generateRandomText(minCount, maxCount);
-
         System.out.println(messages.getString("countChallengeText") + "\n" + text);
         System.out.println(messages.getString("countChallengePrompt") + " @");
 
         long startTime = System.currentTimeMillis();
         int userGuess = scanner.nextInt();
-        scanner.nextLine(); // För att hantera newline efter siffran
+        scanner.nextLine();  // För att hantera newline efter siffran
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 1000;
 
@@ -62,7 +69,11 @@ public class CountChallenge {
             currentUser.removePoints(pointsToDeduct);
         }
 
-        userService.saveUser(currentUser); // Spara den uppdaterade användaren i databasen
+        // Spara resultatet med finishGame metoden
+        finishGame(duration, correct ? 1 : 0, text.toString(), correct);
+
+        // Uppdatera användaren i databasen
+        userService.saveUser(currentUser);
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }
 
@@ -78,5 +89,16 @@ public class CountChallenge {
             text.insert(position, '@');
         }
         return text;
+    }
+
+    public void finishGame(long timeTaken, int correctAnswersCount, String responses, boolean isCorrect) {
+        Speldata spelData = new Speldata();
+        spelData.setAnvandare(currentUser);
+        spelData.setTid(timeTaken);
+        spelData.setRattaSvar(correctAnswersCount);
+        spelData.setSvarIOrdning(responses);
+        spelData.setIsCorrect(isCorrect);
+
+        spelDataService.saveSpeldata(spelData);
     }
 }

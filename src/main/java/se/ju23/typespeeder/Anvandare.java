@@ -8,11 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "anvandare")
+@Table(name = "anvandare") // Se till att detta namn matchar din databastabell exakt
 public class Anvandare {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "AnvandarID") // Se till att namnet matchar databaskolumnens namn exakt
     private Long anvandarID;
 
     @Column(name = "Anvandarnamn", nullable = false, unique = true)
@@ -26,12 +27,12 @@ public class Anvandare {
 
     @Column(name = "poang")
     private Integer poang = 0;
+
     @Column(name = "level")
     private Integer level = 1; // Nytt fält för användarens nivå
 
-    // Standardkonstruktorer, getters och setters
-    public Anvandare() {
-        // Default constructor with initialized fields to avoid null values
+
+public Anvandare() {
         this.poang = 0;
         this.level = 1;
     }
