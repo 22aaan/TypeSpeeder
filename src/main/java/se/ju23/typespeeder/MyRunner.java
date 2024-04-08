@@ -227,27 +227,30 @@ public class MyRunner implements CommandLineRunner {
                 List<Speldata> speedRanking = spelDataService.getSpeedRanking();
                 System.out.println("Snabbhetsranking:");
                 for (Speldata spelData : speedRanking) {
-                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Tid: " + spelData.getTid() + " sekunder, Rätt svar: " + spelData.getRattaSvar());
+                    System.out.println("Spelnamn: " + spelData.getAnvandare().getSpelnamn() + ", Tid: " + spelData.getTid() + " sekunder");
                 }
                 break;
             case "2":
                 List<Speldata> correctAnswersRanking = spelDataService.getCorrectAnswersRanking();
                 System.out.println("Ranking för flest rätt:");
                 for (Speldata spelData : correctAnswersRanking) {
-                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Rätt svar: " + spelData.getRattaSvar() + ", Tid: " + spelData.getTid() + " sekunder");
+                    System.out.println("Spelnamn: " + spelData.getAnvandare().getSpelnamn() + ", Rätt svar: " + spelData.getRattaSvar());
                 }
                 break;
             case "3":
-                List<Speldata> sequentialCorrectAnswersRanking = spelDataService.getSequentialCorrectAnswersRanking();
-                System.out.println("Ranking för flest rätt i ordning:");
-                for (Speldata spelData : sequentialCorrectAnswersRanking) {
-                    System.out.println("Användare: " + spelData.getAnvandare().getAnvandarnamn() + ", Sekventiellt korrekta svar: " + spelData.getSvarIOrdning() + ", Tid: " + spelData.getTid() + " sekunder");
+                List<Spelresultat> ranking = spelDataService.getRankingByFleraRatt();
+                if (ranking.isEmpty()) {
+                    System.out.println("Ingen rankinginformation tillgänglig.");
+                } else {
+                    for (Spelresultat resultat : ranking) {
+                        System.out.println("Spelnamn: " + resultat.getSpelnamn() + ", Flera rätt i rad: " + resultat.getResultat());
+                    }
                 }
                 break;
             default:
-                System.out.println("Ogiltigt val.");
+                System.out.println("Ogiltigt val. Vänligen försök igen.");
                 break;
         }
+    }
 
-}
 }

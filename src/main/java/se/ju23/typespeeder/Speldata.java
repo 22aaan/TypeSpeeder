@@ -14,6 +14,7 @@ public class Speldata {
     @ManyToOne
     @JoinColumn(name = "anvandarid", referencedColumnName = "AnvandarID") // Båda kolumnnamnen måste matcha exakt som i databasen
     private Anvandare anvandare;
+
     @Column(name = "tid")
     private Long tid;
 
@@ -25,9 +26,14 @@ public class Speldata {
 
     @Column(name = "is_correct")
     private Boolean isCorrect;
+
     @Column(name = "niva", nullable = false)
-    private Integer niva = 1;
-    // Getters och setters
+    private Integer niva = 1; // Standardvärde satt till 1 för att undvika null-värden
+
+    @Column(name = "flera_ratt") // Detta fält lagrar antalet rätt i rad
+    private Integer fleraRatt;
+
+    // Standard getter och setter för spelDataID
     public Long getSpelDataId() {
         return spelDataID;
     }
@@ -36,6 +42,7 @@ public class Speldata {
         this.spelDataID = spelDataId;
     }
 
+    // Standard getter och setter för anvandare
     public Anvandare getAnvandare() {
         return anvandare;
     }
@@ -43,14 +50,8 @@ public class Speldata {
     public void setAnvandare(Anvandare anvandare) {
         this.anvandare = anvandare;
     }
-    public Integer getNiva() {
-        return niva;
-    }
 
-    public void setNiva(Integer niva) {
-        this.niva = niva;
-    }
-
+    // Getter och setter för tid
     public Long getTid() {
         return tid;
     }
@@ -59,6 +60,7 @@ public class Speldata {
         this.tid = tid;
     }
 
+    // Getter och setter för rattaSvar
     public Integer getRattaSvar() {
         return rattaSvar;
     }
@@ -67,6 +69,7 @@ public class Speldata {
         this.rattaSvar = rattaSvar;
     }
 
+    // Getter och setter för svarIOrdning
     public String getSvarIOrdning() {
         return svarIOrdning;
     }
@@ -75,11 +78,30 @@ public class Speldata {
         this.svarIOrdning = svarIOrdning;
     }
 
+    // Getter och setter för isCorrect
     public Boolean getIsCorrect() {
         return isCorrect;
     }
 
     public void setIsCorrect(Boolean isCorrect) {
         this.isCorrect = isCorrect;
+    }
+
+    // Getter och setter för niva
+    public Integer getNiva() {
+        return niva;
+    }
+
+    public void setNiva(Integer niva) {
+        this.niva = niva;
+    }
+
+    // Getter och setter för fleraRatt
+    public Integer getFleraRatt() {
+        return fleraRatt;
+    }
+
+    public void setFleraRatt(Integer fleraRatt) {
+        this.fleraRatt = fleraRatt;
     }
 }

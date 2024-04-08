@@ -2,7 +2,6 @@ package se.ju23.typespeeder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -54,23 +53,31 @@ public class CountChallenge {
 
         long startTime = System.currentTimeMillis();
         int userGuess = scanner.nextInt();
-        scanner.nextLine();  // För att hantera newline efter siffran
+        scanner.nextLine(); // För att hantera newline efter siffran
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 1000;
 
         long actualCount = text.chars().filter(ch -> ch == '@').count();
-        boolean correct = userGuess == actualCount;
+        boolean isCorrect = userGuess == actualCount;
 
-        if (correct) {
+        if (isCorrect) {
             currentUser.addPoang(pointsToAdd);
             System.out.println(messages.getString("correctAnswer") + " " + messages.getString("completedIn") + " " + duration + " " + messages.getString("seconds"));
         } else {
-            System.out.println(messages.getString("wrongAnswer") + " " + actualCount + ".");
             currentUser.removePoints(pointsToDeduct);
+            System.out.println(messages.getString("wrongAnswer") + " " + actualCount + ".");
         }
 
-        // Spara resultatet med finishGame metoden
-        finishGame(duration, correct ? 1 : 0, text.toString(), correct);
+        // Här antar vi att du har en metod för att hämta den senaste sekvensen av korrekta svar i rad
+        int antalRattIRad = spelDataService.hittaSenasteFleraRattForAnvandare(currentUser);
+        if (isCorrect) {
+            antalRattIRad++; // Om svaret är korrekt, öka antalet rätta svar i rad
+        } else {
+            antalRattIRad = 0; // Annars, nollställ
+        }
+
+        // Anropa avslutaSpel med rätt parametrar
+        spelDataService.avslutaSpel(currentUser, duration, isCorrect, antalRattIRad, text.toString());
 
         // Uppdatera användaren i databasen
         userService.saveUser(currentUser);
@@ -89,16 +96,5 @@ public class CountChallenge {
             text.insert(position, '@');
         }
         return text;
-    }
-
-    public void finishGame(long timeTaken, int correctAnswersCount, String responses, boolean isCorrect) {
-        Speldata spelData = new Speldata();
-        spelData.setAnvandare(currentUser);
-        spelData.setTid(timeTaken);
-        spelData.setRattaSvar(correctAnswersCount);
-        spelData.setSvarIOrdning(responses);
-        spelData.setIsCorrect(isCorrect);
-
-        spelDataService.saveSpeldata(spelData);
     }
 }

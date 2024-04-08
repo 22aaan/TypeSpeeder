@@ -2,8 +2,8 @@ package se.ju23.typespeeder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class WordChallenge {
@@ -14,7 +14,6 @@ public class WordChallenge {
     private final List<String> englishWords;
     private Anvandare currentUser;
     private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", Locale.getDefault());
-
 
     @Autowired
     public WordChallenge(SpeldataService spelDataService) {
@@ -41,7 +40,6 @@ public class WordChallenge {
         System.out.println(messages.getString("selectDifficulty"));
         int levelChoice = Integer.parseInt(scanner.nextLine());
         int pointsToAdd = 0, pointsToDeduct = 0;
-
 
         int wordsToGuess = switch (levelChoice) {
             case 1 -> { pointsToAdd = 1; pointsToDeduct = 1; yield 1; }
@@ -71,6 +69,10 @@ public class WordChallenge {
         long duration = (endTime - startTime) / 1000;
 
         boolean isCorrect = userWords.containsAll(targetWords) && targetWords.containsAll(userWords);
+
+        int antalRattIRad = spelDataService.hittaSenasteFleraRattForAnvandare(currentUser);
+        antalRattIRad = isCorrect ? antalRattIRad + 1 : 0; // Uppdaterar baserat på om svaret är korrekt
+
         if (isCorrect) {
             currentUser.addPoang(pointsToAdd);
             System.out.println(messages.getString("correctAnswer") + " " + messages.getString("completedIn") + " " + duration + " " + messages.getString("seconds"));
@@ -79,17 +81,11 @@ public class WordChallenge {
             System.out.println(messages.getString("wrongAnswer") + ": " + String.join(", ", targetWords));
         }
 
-        // Skapa och spara Speldata
-        Speldata spelData = new Speldata();
-        spelData.setAnvandare(currentUser);
-        spelData.setTid(duration);
-        spelData.setRattaSvar(isCorrect ? targetWords.size() : 0);
-        spelData.setSvarIOrdning(userResponse);
-        spelData.setIsCorrect(isCorrect);
-        spelDataService.saveSpeldata(spelData); // Se till att denna metod existerar och är korrekt implementerad
+        spelDataService.avslutaSpel(currentUser, duration, isCorrect, antalRattIRad, userResponse);
 
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }
 
-    // Eventuella ytterligare metoder som behövs för din spellogik...
+    // Antag att spelDataService har en metod för att hitta det senaste antalet korrekta svar i rad för en användare
+    // Detta kräver att du har en passande metod i din SpeldataService-klass.
 }
