@@ -3,7 +3,7 @@ package se.ju23.typespeeder;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "uppdatering", schema = "typespeeder", catalog = "")
+@Table(name = "NewsLetter", schema = "typespeeder", catalog = "")
 public class Uppdatering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

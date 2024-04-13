@@ -16,6 +16,9 @@ public class MyRunner implements CommandLineRunner {
     private Anvandare currentUser;
     @Autowired
     private SpeldataService spelDataService;
+    @Autowired
+    private AdminService adminService;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -24,7 +27,9 @@ public class MyRunner implements CommandLineRunner {
                 System.out.println("\nVälkommen till TypeSpeeder!");
                 System.out.println("1. Registrera ny användare");
                 System.out.println("2. Logga in");
-                System.out.println("3. Avsluta");
+                System.out.println("3. Lägg till nyhetsinformation (Admin)");
+                System.out.println("4. Visa nyheter och patchar");
+                System.out.println("5. Avsluta");
                 System.out.print("Välj ett alternativ: ");
                 String choice = scanner.nextLine();
 
@@ -35,7 +40,13 @@ public class MyRunner implements CommandLineRunner {
                     case "2":
                         loginUser(scanner);
                         break;
-                    case "3":
+                        case "3":
+                        addNewsLetterIfAdmin(scanner, adminService);
+                        break;
+                    case "4":
+                        showNewsAndPatches();
+                        break;
+                    case "5":
                         System.out.println("Avslutar programmet...");
                         return;
                     default:
@@ -45,6 +56,7 @@ public class MyRunner implements CommandLineRunner {
             }
         }
     }
+
 
     private void registerUser(Scanner scanner) {
         System.out.println("Ange användarnamn:");
@@ -218,8 +230,8 @@ public class MyRunner implements CommandLineRunner {
     public void showRankingsMenu(Scanner scanner) {
         System.out.println("Välj rankinglista att visa:");
         System.out.println("1. Snabbhet");
-        System.out.println("2. Flest rätt");
-        System.out.println("3. Flest rätt i ordning");
+        System.out.println("2. Flest rätt i rad");
+        System.out.println("3. Antal rätt");
         String choice = scanner.nextLine();
 
         switch (choice) {
@@ -232,7 +244,7 @@ public class MyRunner implements CommandLineRunner {
                 break;
             case "2":
                 List<Speldata> correctAnswersRanking = spelDataService.getCorrectAnswersRanking();
-                System.out.println("Ranking för flest rätt:");
+                System.out.println("Ranking för flest rätt i rad:");
                 for (Speldata spelData : correctAnswersRanking) {
                     System.out.println("Spelnamn: " + spelData.getAnvandare().getSpelnamn() + ", Rätt svar: " + spelData.getRattaSvar());
                 }
@@ -243,13 +255,43 @@ public class MyRunner implements CommandLineRunner {
                     System.out.println("Ingen rankinginformation tillgänglig.");
                 } else {
                     for (Spelresultat resultat : ranking) {
-                        System.out.println("Spelnamn: " + resultat.getSpelnamn() + ", Flera rätt i rad: " + resultat.getResultat());
+                        System.out.println("Spelnamn: " + resultat.getSpelnamn() + ", Antal rätt: " + resultat.getResultat());
                     }
                 }
                 break;
             default:
                 System.out.println("Ogiltigt val. Vänligen försök igen.");
                 break;
+        }
+    }
+    public void showNewsAndPatches() {
+        System.out.println("\nNyheter och Patchar:");
+
+        System.out.println("\nNyheter:");
+        List<String> newsletters = adminService.getNewsletters();
+        if (newsletters.isEmpty()) {
+            System.out.println("Inga nyheter tillgängliga.");
+        } else {
+            for (String newsItem : newsletters) {
+                System.out.println(newsItem);
+
+            }
+        }
+    }
+
+
+    private void addNewsLetterIfAdmin(Scanner scanner, AdminService adminService) {
+        System.out.print("Ange adminlösenord: ");
+        String password = scanner.nextLine();
+        if (adminService.authenticateAdmin(password)) {
+            System.out.print("Skriv in titel för nyhetsinformation: ");
+            String title = scanner.nextLine();
+            System.out.print("Skriv in innehåll för nyhetsinformation: ");
+            String content = scanner.nextLine();
+
+            adminService.addNewsLetter(title, content);
+        } else {
+            System.out.println("Felaktigt lösenord. Endast admin kan lägga till nyhetsinformation.");
         }
     }
 
