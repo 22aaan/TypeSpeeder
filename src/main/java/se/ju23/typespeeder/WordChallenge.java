@@ -86,6 +86,4 @@ public class WordChallenge {
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }
 
-    // Antag att spelDataService har en metod för att hitta det senaste antalet korrekta svar i rad för en användare
-    // Detta kräver att du har en passande metod i din SpeldataService-klass.
 }

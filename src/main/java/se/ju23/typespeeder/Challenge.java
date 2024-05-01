@@ -19,4 +19,3 @@ public class Challenge {
         return "abc";
     }
 }
-

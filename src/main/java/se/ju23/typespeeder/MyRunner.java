@@ -40,7 +40,7 @@ public class MyRunner implements CommandLineRunner {
                     case "2":
                         loginUser(scanner);
                         break;
-                        case "3":
+                    case "3":
                         addNewsLetterIfAdmin(scanner, adminService);
                         break;
                     case "4":

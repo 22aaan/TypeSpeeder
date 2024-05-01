@@ -32,7 +32,7 @@ public class Anvandare {
     private Integer level = 1; // Nytt fält för användarens nivå
 
 
-public Anvandare() {
+    public Anvandare() {
         this.poang = 0;
         this.level = 1;
     }

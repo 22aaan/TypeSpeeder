@@ -17,4 +17,3 @@ public interface AnvandareRepository extends JpaRepository<Anvandare, Long> {
     // Andra definierade metoder...
 }
 
-
