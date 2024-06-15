@@ -53,7 +53,7 @@ public class CountChallenge {
 
         long startTime = System.currentTimeMillis();
         int userGuess = scanner.nextInt();
-        scanner.nextLine(); // För att hantera newline efter siffran
+        scanner.nextLine();
         long endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 1000;
 
@@ -68,18 +68,15 @@ public class CountChallenge {
             System.out.println(messages.getString("wrongAnswer") + " " + actualCount + ".");
         }
 
-        // Här antar vi att du har en metod för att hämta den senaste sekvensen av korrekta svar i rad
         int antalRattIRad = spelDataService.hittaSenasteFleraRattForAnvandare(currentUser);
         if (isCorrect) {
-            antalRattIRad++; // Om svaret är korrekt, öka antalet rätta svar i rad
+            antalRattIRad++;
         } else {
-            antalRattIRad = 0; // Annars, nollställ
+            antalRattIRad = 0;
         }
 
-        // Anropa avslutaSpel med rätt parametrar
         spelDataService.avslutaSpel(currentUser, duration, isCorrect, antalRattIRad, text.toString());
 
-        // Uppdatera användaren i databasen
         userService.saveUser(currentUser);
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }

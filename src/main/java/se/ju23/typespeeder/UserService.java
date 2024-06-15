@@ -26,12 +26,10 @@ public class UserService {
         return true;
     }
 
-    // Försöker logga in en användare med angivet användarnamn och lösenord.
     public Optional<Anvandare> loginUser(String username, String password) {
         return anvandareRepository.findByAnvandarnamnAndLosenord(username, password);
     }
 
-    // Uppdaterar en användares information baserat på användarID.
     public boolean updateUser(Long anvandarID, String newAnvandarnamn, String newLosenord, String newSpelnamn) {
         Optional<Anvandare> anvandareOptional = anvandareRepository.findById(anvandarID);
         if (anvandareOptional.isPresent()) {
@@ -51,12 +49,10 @@ public class UserService {
         return false;
     }
 
-    // Söker efter en användare baserat på användarnamnet.
     public Optional<Anvandare> findByAnvandarnamn(String anvandarnamn) {
         return anvandareRepository.findByAnvandarnamn(anvandarnamn);
     }
 
-    // Sparar en användare till databasen. Används för att uppdatera befintlig användarinformation, inklusive poäng.
     public void saveUser(Anvandare anvandare) {
         anvandareRepository.save(anvandare);
     }

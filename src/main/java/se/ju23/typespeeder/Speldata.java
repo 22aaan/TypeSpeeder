@@ -12,7 +12,7 @@ public class Speldata {
     private Long spelDataID;
 
     @ManyToOne
-    @JoinColumn(name = "anvandarid", referencedColumnName = "AnvandarID") // Båda kolumnnamnen måste matcha exakt som i databasen
+    @JoinColumn(name = "anvandarid", referencedColumnName = "AnvandarID")
     private Anvandare anvandare;
 
     @Column(name = "tid")
@@ -28,12 +28,12 @@ public class Speldata {
     private Boolean isCorrect;
 
     @Column(name = "niva", nullable = false)
-    private Integer niva = 1; // Standardvärde satt till 1 för att undvika null-värden
+    private Integer niva = 1;
 
-    @Column(name = "flera_ratt") // Detta fält lagrar antalet rätt i rad
+    @Column(name = "flera_ratt")
     private Integer fleraRatt;
 
-    // Standard getter och setter för spelDataID
+
     public Long getSpelDataId() {
         return spelDataID;
     }
@@ -42,7 +42,7 @@ public class Speldata {
         this.spelDataID = spelDataId;
     }
 
-    // Standard getter och setter för anvandare
+
     public Anvandare getAnvandare() {
         return anvandare;
     }
@@ -51,7 +51,6 @@ public class Speldata {
         this.anvandare = anvandare;
     }
 
-    // Getter och setter för tid
     public Long getTid() {
         return tid;
     }
@@ -60,7 +59,6 @@ public class Speldata {
         this.tid = tid;
     }
 
-    // Getter och setter för rattaSvar
     public Integer getRattaSvar() {
         return rattaSvar;
     }
@@ -69,7 +67,6 @@ public class Speldata {
         this.rattaSvar = rattaSvar;
     }
 
-    // Getter och setter för svarIOrdning
     public String getSvarIOrdning() {
         return svarIOrdning;
     }
@@ -78,7 +75,6 @@ public class Speldata {
         this.svarIOrdning = svarIOrdning;
     }
 
-    // Getter och setter för isCorrect
     public Boolean getIsCorrect() {
         return isCorrect;
     }
@@ -87,7 +83,6 @@ public class Speldata {
         this.isCorrect = isCorrect;
     }
 
-    // Getter och setter för niva
     public Integer getNiva() {
         return niva;
     }
@@ -96,7 +91,6 @@ public class Speldata {
         this.niva = niva;
     }
 
-    // Getter och setter för fleraRatt
     public Integer getFleraRatt() {
         return fleraRatt;
     }

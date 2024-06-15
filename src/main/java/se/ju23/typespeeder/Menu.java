@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Menu implements MenuService {
     private Scanner scanner = new Scanner(System.in);
-    private AdminService adminService; // Antag att detta är rätt sätt att få tillgång till AdminService
+    private AdminService adminService;
 
     public Menu(AdminService adminService) {
         this.adminService = adminService;

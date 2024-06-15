@@ -25,7 +25,6 @@ public class NewsLetter {
     @Column(name = "Content", nullable = false, length = 255) // assuming a max length of 255
     private String content;
 
-    // Getters and setters for new field
 
     public String getContent() {
         return content;
@@ -35,7 +34,6 @@ public class NewsLetter {
         this.content = content;
     }
 
-    // Existing getters and setters
 
     public Integer getUppdateringsId() {
         return uppdateringsId;
@@ -69,7 +67,6 @@ public class NewsLetter {
         this.publishDateTime = publishDateTime;
     }
 
-    // Override equals and hashCode as before
 
     @Override
     public boolean equals(Object o) {

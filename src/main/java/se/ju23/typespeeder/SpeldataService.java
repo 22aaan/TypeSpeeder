@@ -25,13 +25,12 @@ public class SpeldataService {
         nySpelData.setAnvandare(anvandare);
         nySpelData.setTid(tid);
         nySpelData.setIsCorrect(isCorrect);
-        nySpelData.setRattaSvar(rattaSvar); // Antag att ett värde alltid ges här.
+        nySpelData.setRattaSvar(rattaSvar);
         nySpelData.setSvarIOrdning(svarIOrdning);
 
         int fleraRattIRad = isCorrect ? hittaSenasteFleraRattForAnvandare(anvandare) + 1 : 0;
         nySpelData.setFleraRatt(fleraRattIRad);
 
-        // Spara nySpelData objektet endast om isCorrect är true eller om det är det första spelet (fleraRattIRad = 0).
         if (isCorrect || fleraRattIRad == 0) {
             speldataRepository.save(nySpelData);
         }

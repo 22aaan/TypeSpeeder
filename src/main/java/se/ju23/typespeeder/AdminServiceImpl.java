@@ -29,7 +29,7 @@ public class AdminServiceImpl implements AdminService {
         NewsLetter newsLetter = new NewsLetter();
         newsLetter.setTitel(title);
         newsLetter.setBeskrivning(content);
-        newsLetter.setPublishDateTime(LocalDateTime.now()); // Ange dagens datum som publiceringsdatum
+        newsLetter.setPublishDateTime(LocalDateTime.now());
         newsLetterRepository.save(newsLetter);
         System.out.println("Nyhetsinformation tillagd.");
     }

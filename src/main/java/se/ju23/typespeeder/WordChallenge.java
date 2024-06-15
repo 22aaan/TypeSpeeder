@@ -71,7 +71,7 @@ public class WordChallenge {
         boolean isCorrect = userWords.containsAll(targetWords) && targetWords.containsAll(userWords);
 
         int antalRattIRad = spelDataService.hittaSenasteFleraRattForAnvandare(currentUser);
-        antalRattIRad = isCorrect ? antalRattIRad + 1 : 0; // Uppdaterar baserat på om svaret är korrekt
+        antalRattIRad = isCorrect ? antalRattIRad + 1 : 0;
 
         if (isCorrect) {
             currentUser.addPoang(pointsToAdd);

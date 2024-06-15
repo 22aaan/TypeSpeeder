@@ -4,7 +4,6 @@ public class Spelresultat {
     private String spelnamn;
     private Integer resultat;
 
-    // Konstruktor, getters och setters här
     public Spelresultat(String spelnamn, Integer resultat) {
         this.spelnamn = spelnamn;
         this.resultat = resultat;

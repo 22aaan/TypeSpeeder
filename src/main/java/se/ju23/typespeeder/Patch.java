@@ -11,22 +11,19 @@ public class Patch {
     private Integer id;
 
     @Column(name = "patchVersion", nullable = false, length = 45)
-    private String patchVersion;  // As expected by the test
+    private String patchVersion;
 
     @Column(name = "realeaseDateTime", nullable = false)
-    private LocalDateTime realeaseDateTime;  // As expected by the test
+    private LocalDateTime realeaseDateTime;
 
-    // Constructor
     public Patch() {
     }
 
-    // Additional constructor your test might be assuming (not required by JPA but could be tested for)
     public Patch(String patchVersion, LocalDateTime realeaseDateTime) {
         this.patchVersion = patchVersion;
         this.realeaseDateTime = realeaseDateTime;
     }
 
-    // Getter and setter for patchVersion
     public String getpatchVersion() {
         return patchVersion;
     }
@@ -35,7 +32,6 @@ public class Patch {
         this.patchVersion = patchVersion;
     }
 
-    // Getter for realeaseDateTime as expected by the test
     public LocalDateTime getRealeaseDateTime() {
         return realeaseDateTime;
     }

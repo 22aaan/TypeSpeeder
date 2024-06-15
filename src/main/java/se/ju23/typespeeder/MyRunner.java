@@ -82,13 +82,13 @@ public class MyRunner implements CommandLineRunner {
 
         Optional<Anvandare> loggedInUserOptional = userService.loginUser(username, password);
         if (loggedInUserOptional.isPresent()) {
-            currentUser = loggedInUserOptional.get(); // Sätt currentUser till den inloggade användaren
+            currentUser = loggedInUserOptional.get();
             System.out.println("Inloggningen lyckades!");
 
             this.currentAnvandarnamn = currentUser.getAnvandarnamn();
 
             selectLanguage(scanner);
-            showGameMenu(scanner, currentUser.getSpelnamn()); // Använd spelnamn från currentUser
+            showGameMenu(scanner, currentUser.getSpelnamn());
         } else {
             System.out.println("Inloggningen misslyckades, kontrollera dina uppgifter.");
         }
@@ -112,7 +112,7 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("2. " + messages.getString("startCountChallenge"));
             System.out.println("3. " + messages.getString("updateAccount"));
             System.out.println("4. " + messages.getString("showScore"));
-            System.out.println("5. Visa rankinglistor"); // Nytt alternativ för rankinglistor
+            System.out.println("5. " + messages.getString("showRankingLists"));
             System.out.println("6. " + messages.getString("logout"));
             System.out.print(messages.getString("yourChoice"));
             String choice = scanner.nextLine();
@@ -131,7 +131,7 @@ public class MyRunner implements CommandLineRunner {
                     showScore();
                     break;
                 case "5":
-                    showRankingsMenu(scanner); // Hantera visning av rankinglistor
+                    showRankingLists(scanner);
                     break;
                 case "6":
                     System.out.println(messages.getString("loggingOut"));
@@ -146,7 +146,6 @@ public class MyRunner implements CommandLineRunner {
 
     private void startWordChallenge() {
         if (currentUser != null) {
-            // Här skapar vi bara WordChallenge med SpeldataService eftersom det verkar vara det den förväntar sig
             WordChallenge wordChallenge = new WordChallenge(spelDataService);
             wordChallenge.setCurrentUser(currentUser); // Du kanske behöver en setter-metod i WordChallenge
             wordChallenge.startChallenge();
@@ -161,7 +160,6 @@ public class MyRunner implements CommandLineRunner {
 
     private void startCountChallenge() {
         if (currentUser != null) {
-            // Autowire eller tillhandahåll beroenden som behövs av CountChallenge
             CountChallenge countChallenge = new CountChallenge(spelDataService, userService);
             countChallenge.setupChallenge(messages, currentUser); // Tillhandahåll övriga beroenden
             countChallenge.startChallenge();
@@ -195,7 +193,7 @@ public class MyRunner implements CommandLineRunner {
             Long userId = currentUser.getAnvandarID();
 
             String newAnvandarnamn = currentAnvandarnamn;
-            String newSpelnamn = ""; // Dessa bör hämtas eller vara tillgängliga för den inloggade användaren
+            String newSpelnamn = "";
             String newLosenord = "";
 
             switch (choice) {
@@ -216,10 +214,8 @@ public class MyRunner implements CommandLineRunner {
                     return;
             }
 
-            // Använd den uppdaterade informationen för att uppdatera användaren i databasen
             if (userService.updateUser(userId, newAnvandarnamn, newLosenord, newSpelnamn)) {
                 System.out.println("Ditt konto har uppdaterats.");
-                // Om användarnamnet uppdaterades, bör du antagligen uppdatera `currentAnvandarnamn` för efterföljande operationer
             } else {
                 System.out.println("Uppdateringen misslyckades. Användarnamnet kan vara upptaget.");
             }
@@ -227,11 +223,11 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("Användaren finns inte.");
         }
     }
-    public void showRankingsMenu(Scanner scanner) {
-        System.out.println("Välj rankinglista att visa:");
-        System.out.println("1. Snabbhet");
-        System.out.println("2. Flest rätt i rad");
-        System.out.println("3. Antal rätt");
+    public void showRankingLists(Scanner scanner) {
+        System.out.println(messages.getString("chooseRankingList"));
+        System.out.println("1. " + messages.getString("speed"));
+        System.out.println("2. " + messages.getString("mostCorrectInARow"));
+        System.out.println("3. " + messages.getString("totalCorrect"));
         String choice = scanner.nextLine();
 
         switch (choice) {

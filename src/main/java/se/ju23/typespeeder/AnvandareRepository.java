@@ -11,9 +11,8 @@ public interface AnvandareRepository extends JpaRepository<Anvandare, Long> {
     boolean existsByAnvandarnamnAndAnvandarIDNot(String anvandarnamn, Long anvandarID);
     boolean existsByAnvandarnamn(String anvandarnamn);
     Optional<Anvandare> findByAnvandarnamnAndLosenord(String anvandarnamn, String losenord);
-    Optional<Anvandare> findById(Long id); // Lägg till denna rad
-    Optional<Anvandare> findByAnvandarnamn(String anvandarnamn); // Lägg till denna rad
+    Optional<Anvandare> findById(Long id);
+    Optional<Anvandare> findByAnvandarnamn(String anvandarnamn);
 
-    // Andra definierade metoder...
 }
 

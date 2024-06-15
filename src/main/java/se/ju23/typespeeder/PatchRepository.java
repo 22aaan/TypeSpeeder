@@ -4,5 +4,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PatchRepository extends JpaRepository<Patch, Long> {
-    // Här kan du lägga till egna query-metoder om så behövs
 }
