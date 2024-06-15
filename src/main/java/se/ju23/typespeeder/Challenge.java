@@ -9,7 +9,6 @@ public class Challenge {
             Thread.currentThread().interrupt();
         }
     }
-
     public String lettersToType() {
         return "abc";
     }

@@ -10,17 +10,17 @@ public class UserService {
     @Autowired
     private AnvandareRepository anvandareRepository;
 
-    private Anvandare currentUser; // Temporär lösning för att hantera nuvarande användare
+    private Anvandare currentUser;
     public boolean registerUser(String anvandarnamn, String losenord, String spelnamn) {
         if (anvandareRepository.existsByAnvandarnamn(anvandarnamn)) {
-            return false; // Användarnamnet är redan taget
+            return false;
         }
 
         Anvandare nyAnvandare = new Anvandare();
         nyAnvandare.setAnvandarnamn(anvandarnamn);
-        nyAnvandare.setLosenord(losenord); // Notera: Lösenord bör hashas för säker lagring
+        nyAnvandare.setLosenord(losenord);
         nyAnvandare.setSpelnamn(spelnamn);
-        nyAnvandare.setPoang(0); // Initialt sätta användarens poäng till 0
+        nyAnvandare.setPoang(0);
 
         anvandareRepository.save(nyAnvandare);
         return true;
@@ -38,7 +38,7 @@ public class UserService {
                 anvandare.setAnvandarnamn(newAnvandarnamn);
             }
             if (newLosenord != null && !newLosenord.isEmpty()) {
-                anvandare.setLosenord(newLosenord); // Notera: Lösenord bör hashas
+                anvandare.setLosenord(newLosenord);
             }
             if (newSpelnamn != null && !newSpelnamn.isEmpty()) {
                 anvandare.setSpelnamn(newSpelnamn);
@@ -48,7 +48,6 @@ public class UserService {
         }
         return false;
     }
-
     public Optional<Anvandare> findByAnvandarnamn(String anvandarnamn) {
         return anvandareRepository.findByAnvandarnamn(anvandarnamn);
     }

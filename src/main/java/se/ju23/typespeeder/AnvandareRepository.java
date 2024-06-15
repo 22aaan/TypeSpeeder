@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import se.ju23.typespeeder.Anvandare;
 
-
 @Repository
 public interface AnvandareRepository extends JpaRepository<Anvandare, Long> {
     boolean existsByAnvandarnamnAndAnvandarIDNot(String anvandarnamn, Long anvandarID);
@@ -13,6 +12,5 @@ public interface AnvandareRepository extends JpaRepository<Anvandare, Long> {
     Optional<Anvandare> findByAnvandarnamnAndLosenord(String anvandarnamn, String losenord);
     Optional<Anvandare> findById(Long id);
     Optional<Anvandare> findByAnvandarnamn(String anvandarnamn);
-
 }
 

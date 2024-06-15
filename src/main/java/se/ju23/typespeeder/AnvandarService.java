@@ -25,7 +25,7 @@ public class AnvandarService {
         nyAnvandare.setSpelnamn(spelnamn);
         nyAnvandare.setPoang(0);
 
-        anvandareRepository.save(nyAnvandare); // Spara den nya användaren i databasen
+        anvandareRepository.save(nyAnvandare);
         System.out.println("Ny användare registrerad med användarnamn: " + anvandarnamn);
 
         return true;

@@ -7,36 +7,26 @@ import java.util.*;
 
 @Component
 public class WordChallenge {
-    @Autowired
-    private SpeldataService spelDataService;
-    private final Scanner scanner;
+    private final SpeldataService spelDataService;
+    private final Scanner scanner = new Scanner(System.in);
     private final List<String> swedishWords;
     private final List<String> englishWords;
     private Anvandare currentUser;
-    private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", Locale.getDefault());
+    private ResourceBundle messages;
 
     @Autowired
     public WordChallenge(SpeldataService spelDataService) {
         this.spelDataService = spelDataService;
-        this.scanner = new Scanner(System.in);
         this.swedishWords = List.of("fotboll", "handboll", "basket", "volleyboll", "golf", "tennis", "bordtennis", "badminton", "baseboll", "rugby");
         this.englishWords = List.of("soccer", "handball", "basketball", "volleyball", "golf", "tennis", "table tennis", "badminton", "baseball", "rugby");
     }
 
-    public void setCurrentUser(Anvandare currentUser) {
-        this.currentUser = currentUser;
-    }
-
-    public void setMessages(ResourceBundle messages) {
+    public void setupChallenge(ResourceBundle messages, Anvandare user) {
         this.messages = messages;
+        this.currentUser = user;
     }
 
     public void startChallenge() {
-        if (messages == null || currentUser == null) {
-            System.err.println("WordChallenge har inte korrekt initialiserats med alla nödvändiga beroenden.");
-            return;
-        }
-
         System.out.println(messages.getString("selectDifficulty"));
         int levelChoice = Integer.parseInt(scanner.nextLine());
         int pointsToAdd = 0, pointsToDeduct = 0;
@@ -85,5 +75,4 @@ public class WordChallenge {
 
         System.out.println("Your total score is now: " + currentUser.getPoang());
     }
-
 }

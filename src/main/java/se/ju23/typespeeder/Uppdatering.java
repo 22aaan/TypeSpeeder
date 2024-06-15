@@ -66,7 +66,6 @@ public class Uppdatering {
 
         return true;
     }
-
     @Override
     public int hashCode() {
         int result = uppdateringsId;

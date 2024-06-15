@@ -25,7 +25,6 @@ public class NewsLetter {
     @Column(name = "Content", nullable = false, length = 255) // assuming a max length of 255
     private String content;
 
-
     public String getContent() {
         return content;
     }
@@ -33,7 +32,6 @@ public class NewsLetter {
     public void setContent(String content) {
         this.content = content;
     }
-
 
     public Integer getUppdateringsId() {
         return uppdateringsId;
@@ -67,7 +65,6 @@ public class NewsLetter {
         this.publishDateTime = publishDateTime;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,7 +78,6 @@ public class NewsLetter {
         if (!getPublishDateTime().equals(that.getPublishDateTime())) return false;
         return getContent().equals(that.getContent());
     }
-
     @Override
     public int hashCode() {
         int result = getUppdateringsId().hashCode();

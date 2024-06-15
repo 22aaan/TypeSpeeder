@@ -13,10 +13,7 @@ public class Menu implements MenuService {
     }
 
     public Menu() {
-
     }
-
-
     @Override
     public List<String> getMenuOptions() {
         List<String> options = new ArrayList<>();
@@ -25,7 +22,7 @@ public class Menu implements MenuService {
         options.add("Ändra användarinställningar");
         options.add("Visa ledartavlan");
         options.add("Avsluta");
-        options.add("Lägg till nyhetsinformation (endast admin)"); // Nytt alternativ
+        options.add("Lägg till nyhetsinformation (endast admin)");
         return options;
     }
         {
@@ -40,7 +37,6 @@ public class Menu implements MenuService {
             System.out.println((i + 1) + ". " + options.get(i));
         }
     }
-
     @Override
     public void addNewsLetterIfAdmin(Scanner scanner) {
         System.out.print("Ange adminlösenord: ");
@@ -48,7 +44,6 @@ public class Menu implements MenuService {
         if ("rättLösenord".equals(password)) {
             System.out.print("Skriv in nyhetsinformation: ");
             String news = scanner.nextLine();
-            // Här skulle du anropa din adminService för att faktiskt lägga till nyhetsinformation
             System.out.println("Nyhetsinformation tillagd.");
         } else {
             System.out.println("Felaktigt lösenord. Endast admin kan lägga till nyhetsinformation.");

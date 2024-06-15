@@ -19,7 +19,6 @@ public class MyRunner implements CommandLineRunner {
     @Autowired
     private AdminService adminService;
 
-
     @Override
     public void run(String... args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -56,8 +55,6 @@ public class MyRunner implements CommandLineRunner {
             }
         }
     }
-
-
     private void registerUser(Scanner scanner) {
         System.out.println("Ange användarnamn:");
         String username = scanner.nextLine();
@@ -93,16 +90,12 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("Inloggningen misslyckades, kontrollera dina uppgifter.");
         }
     }
-
-
     private void selectLanguage(Scanner scanner) {
         System.out.println("1. English\n2. Svenska");
         String choice = scanner.nextLine();
         Locale locale = "1".equals(choice) ? new Locale("en", "US") : new Locale("sv", "SE");
         messages = ResourceBundle.getBundle("MessagesBundle", locale);
     }
-
-
     private void showGameMenu(Scanner scanner, String spelnamn) {
         System.out.println(messages.getString("welcomeGame") + " " + spelnamn + "!");
         boolean stayInMenu = true;
@@ -147,28 +140,22 @@ public class MyRunner implements CommandLineRunner {
     private void startWordChallenge() {
         if (currentUser != null) {
             WordChallenge wordChallenge = new WordChallenge(spelDataService);
-            wordChallenge.setCurrentUser(currentUser); // Du kanske behöver en setter-metod i WordChallenge
+            wordChallenge.setupChallenge(messages, currentUser);
             wordChallenge.startChallenge();
-            userService.saveUser(currentUser);
         } else {
             System.out.println("Användaren är inte inloggad.");
         }
     }
 
-
-
-
     private void startCountChallenge() {
         if (currentUser != null) {
             CountChallenge countChallenge = new CountChallenge(spelDataService, userService);
-            countChallenge.setupChallenge(messages, currentUser); // Tillhandahåll övriga beroenden
+            countChallenge.setupChallenge(messages, currentUser);
             countChallenge.startChallenge();
         } else {
             System.out.println("Användaren är inte inloggad.");
         }
     }
-
-
 
     private void showScore() {
         if (currentUser != null) {
@@ -177,14 +164,11 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("No user is currently logged in.");
         }
     }
-
-
-
     private void updateAccount(Scanner scanner) {
-        System.out.println("Vad vill du uppdatera?");
-        System.out.println("1. Användarnamn");
-        System.out.println("2. Spelnamn");
-        System.out.println("3. Lösenord");
+        System.out.println(messages.getString("updateAccountPrompt"));
+        System.out.println("1. " + messages.getString("updateUsername"));
+        System.out.println("2. " + messages.getString("updateGameName"));
+        System.out.println("3. " + messages.getString("updatePassword"));
         String choice = scanner.nextLine();
 
         Optional<Anvandare> currentUserOptional = userService.findByAnvandarnamn(currentAnvandarnamn);
@@ -193,34 +177,34 @@ public class MyRunner implements CommandLineRunner {
             Long userId = currentUser.getAnvandarID();
 
             String newAnvandarnamn = currentAnvandarnamn;
-            String newSpelnamn = "";
-            String newLosenord = "";
+            String newSpelnamn = currentUser.getSpelnamn();
+            String newLosenord = currentUser.getLosenord();
 
             switch (choice) {
                 case "1":
-                    System.out.print("Ange nytt användarnamn: ");
+                    System.out.print(messages.getString("enterNewUsername"));
                     newAnvandarnamn = scanner.nextLine();
                     break;
                 case "2":
-                    System.out.print("Ange nytt spelnamn: ");
+                    System.out.print(messages.getString("enterNewGameName"));
                     newSpelnamn = scanner.nextLine();
                     break;
                 case "3":
-                    System.out.print("Ange nytt lösenord: ");
+                    System.out.print(messages.getString("enterNewPassword"));
                     newLosenord = scanner.nextLine();
                     break;
                 default:
-                    System.out.println("Ogiltigt val.");
+                    System.out.println(messages.getString("invalidChoice"));
                     return;
             }
 
             if (userService.updateUser(userId, newAnvandarnamn, newLosenord, newSpelnamn)) {
-                System.out.println("Ditt konto har uppdaterats.");
+                System.out.println(messages.getString("accountUpdated"));
             } else {
-                System.out.println("Uppdateringen misslyckades. Användarnamnet kan vara upptaget.");
+                System.out.println(messages.getString("updateFailed"));
             }
         } else {
-            System.out.println("Användaren finns inte.");
+            System.out.println(messages.getString("userNotFound"));
         }
     }
     public void showRankingLists(Scanner scanner) {
@@ -233,30 +217,34 @@ public class MyRunner implements CommandLineRunner {
         switch (choice) {
             case "1":
                 List<Speldata> speedRanking = spelDataService.getSpeedRanking();
-                System.out.println("Snabbhetsranking:");
+                System.out.println(messages.getString("speedRanking"));
                 for (Speldata spelData : speedRanking) {
-                    System.out.println("Spelnamn: " + spelData.getAnvandare().getSpelnamn() + ", Tid: " + spelData.getTid() + " sekunder");
+                    System.out.println(messages.getString("gameName") + spelData.getAnvandare().getSpelnamn() + ", " +
+                            messages.getString("time") + spelData.getTid() + " " + messages.getString("seconds"));
                 }
                 break;
             case "2":
                 List<Speldata> correctAnswersRanking = spelDataService.getCorrectAnswersRanking();
-                System.out.println("Ranking för flest rätt i rad:");
+                System.out.println(messages.getString("mostCorrectInARowRanking"));
                 for (Speldata spelData : correctAnswersRanking) {
-                    System.out.println("Spelnamn: " + spelData.getAnvandare().getSpelnamn() + ", Rätt svar: " + spelData.getRattaSvar());
+                    System.out.println(messages.getString("gameName") + spelData.getAnvandare().getSpelnamn() + ", " +
+                            messages.getString("correctAnswers") + spelData.getRattaSvar());
                 }
                 break;
             case "3":
                 List<Spelresultat> ranking = spelDataService.getRankingByFleraRatt();
+                System.out.println(messages.getString("totalCorrectRanking"));
                 if (ranking.isEmpty()) {
-                    System.out.println("Ingen rankinginformation tillgänglig.");
+                    System.out.println(messages.getString("noRankingInfo"));
                 } else {
                     for (Spelresultat resultat : ranking) {
-                        System.out.println("Spelnamn: " + resultat.getSpelnamn() + ", Antal rätt: " + resultat.getResultat());
+                        System.out.println(messages.getString("gameName") + resultat.getSpelnamn() + ", " +
+                                messages.getString("correctAnswers") + resultat.getResultat());
                     }
                 }
                 break;
             default:
-                System.out.println("Ogiltigt val. Vänligen försök igen.");
+                System.out.println(messages.getString("invalidChoice"));
                 break;
         }
     }
@@ -274,8 +262,6 @@ public class MyRunner implements CommandLineRunner {
             }
         }
     }
-
-
     private void addNewsLetterIfAdmin(Scanner scanner, AdminService adminService) {
         System.out.print("Ange adminlösenord: ");
         String password = scanner.nextLine();
@@ -290,5 +276,4 @@ public class MyRunner implements CommandLineRunner {
             System.out.println("Felaktigt lösenord. Endast admin kan lägga till nyhetsinformation.");
         }
     }
-
 }

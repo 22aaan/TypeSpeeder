@@ -31,16 +31,13 @@ public class Anvandare {
     @Column(name = "level")
     private Integer level = 1;
 
-
     public Anvandare() {
         this.poang = 0;
         this.level = 1;
     }
-
     public Long getAnvandarID() {
         return anvandarID;
     }
-
     public void setAnvandarID(Long anvandarID) {
         this.anvandarID = anvandarID;
     }

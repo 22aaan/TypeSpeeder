@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-
 @Component
 public class GameHandler {
     private final SpeldataService spelDataService;
@@ -25,8 +24,6 @@ public class GameHandler {
         this.messages = ResourceBundle.getBundle("MessagesBundle", new Locale("sv", "SE"));
 
     }
-
-
     public void startGame() {
         System.out.println(messages.getString("gameStart"));
     }

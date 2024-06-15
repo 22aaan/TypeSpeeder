@@ -9,7 +9,6 @@ public class Spelresultat {
         this.resultat = resultat;
     }
 
-    // Getters och setters
     public String getSpelnamn() { return spelnamn; }
     public void setSpelnamn(String spelnamn) { this.spelnamn = spelnamn; }
 

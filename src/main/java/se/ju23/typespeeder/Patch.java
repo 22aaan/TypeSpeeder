@@ -2,7 +2,6 @@ package se.ju23.typespeeder;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "Patch")
 public class Patch {
@@ -18,7 +17,6 @@ public class Patch {
 
     public Patch() {
     }
-
     public Patch(String patchVersion, LocalDateTime realeaseDateTime) {
         this.patchVersion = patchVersion;
         this.realeaseDateTime = realeaseDateTime;
