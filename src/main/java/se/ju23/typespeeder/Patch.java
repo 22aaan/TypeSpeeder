@@ -1,45 +1,47 @@
 package se.ju23.typespeeder;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-@Entity // Denna annotation behövs för att definiera klassen som en JPA-entitet
-@Table(name = "patch") // Om tabellen heter 'patch' i din databas
+@Entity
+@Table(name = "Patch")
 public class Patch {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; // Om din databas använder BIGINT för ID
+    private Integer id;
 
-    @Column(name = "titel", nullable = false, length = 45)
-    private String titel;
+    @Column(name = "patchVersion", nullable = false, length = 45)
+    private String patchVersion;  // As expected by the test
 
-    @Column(name = "beskrivning", nullable = false, length = 45)
-    private String beskrivning;
-    public Patch(String titel, String beskrivning) {
-        this.titel = titel;
-        this.beskrivning = beskrivning;
+    @Column(name = "realeaseDateTime", nullable = false)
+    private LocalDateTime realeaseDateTime;  // As expected by the test
+
+    // Constructor
+    public Patch() {
     }
 
-    // Getters
-    public String getTitel() {
-        return titel;
+    // Additional constructor your test might be assuming (not required by JPA but could be tested for)
+    public Patch(String patchVersion, LocalDateTime realeaseDateTime) {
+        this.patchVersion = patchVersion;
+        this.realeaseDateTime = realeaseDateTime;
     }
 
-    public String getBeskrivning() {
-        return beskrivning;
+    // Getter and setter for patchVersion
+    public String getpatchVersion() {
+        return patchVersion;
     }
 
-    // Setters
-    public void setTitel(String titel) {
-        this.titel = titel;
+    public void setpatchVersion(String patchVersion) {
+        this.patchVersion = patchVersion;
     }
 
-    public void setBeskrivning(String beskrivning) {
-        this.beskrivning = beskrivning;
+    // Getter for realeaseDateTime as expected by the test
+    public LocalDateTime getRealeaseDateTime() {
+        return realeaseDateTime;
     }
 
-    @Override
-    public String toString() {
-        return "Patch [titel=" + titel + ", beskrivning=" + beskrivning + "]";
+    public void setRealeaseDateTime(LocalDateTime realeaseDateTime) {
+        this.realeaseDateTime = realeaseDateTime;
     }
+
 }

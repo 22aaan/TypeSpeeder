@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -27,7 +29,7 @@ public class AdminServiceImpl implements AdminService {
         NewsLetter newsLetter = new NewsLetter();
         newsLetter.setTitel(title);
         newsLetter.setBeskrivning(content);
-        newsLetter.setPubliceringsdatum(LocalDate.now().toString()); // Ange dagens datum som publiceringsdatum
+        newsLetter.setPublishDateTime(LocalDateTime.now()); // Ange dagens datum som publiceringsdatum
         newsLetterRepository.save(newsLetter);
         System.out.println("Nyhetsinformation tillagd.");
     }
@@ -41,11 +43,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void addPatch(String title, String description) {
-        Patch patch = new Patch(title, description); // Använder befintlig konstruktor
+    public void addPatch(String patchVersion, LocalDateTime releaseDateTime) {
+        Patch patch = new Patch(patchVersion, releaseDateTime);
         patchRepository.save(patch);
-        System.out.println("Patch-information tillagd.");
+        System.out.println("Patch-information tillagd med version " + patchVersion + " och datum " + releaseDateTime);
     }
+
 
 
     @Override

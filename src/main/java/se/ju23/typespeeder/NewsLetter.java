@@ -2,6 +2,8 @@ package se.ju23.typespeeder;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "news_letter", schema = "typespeeder", catalog = "")
 public class NewsLetter {
@@ -11,17 +13,29 @@ public class NewsLetter {
     @Column(name = "UppdateringsID", nullable = false)
     private Integer uppdateringsId;
 
-
     @Column(name = "Titel", nullable = false, length = 45)
     private String titel;
 
     @Column(name = "Beskrivning", nullable = false, length = 45)
     private String beskrivning;
 
-    @Column(name = "Publiceringsdatum", nullable = false, length = 45)
-    private String publiceringsdatum;
+    @Column(name = "publishDateTime", nullable = false, length = 45)
+    private LocalDateTime publishDateTime;
 
-    // Getters och setters
+    @Column(name = "Content", nullable = false, length = 255) // assuming a max length of 255
+    private String content;
+
+    // Getters and setters for new field
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    // Existing getters and setters
 
     public Integer getUppdateringsId() {
         return uppdateringsId;
@@ -47,39 +61,37 @@ public class NewsLetter {
         this.beskrivning = beskrivning;
     }
 
-    public String getPubliceringsdatum() {
-        return publiceringsdatum;
+    public LocalDateTime getPublishDateTime() {
+        return publishDateTime;
     }
 
-    public void setPubliceringsdatum(String publiceringsdatum) {
-        this.publiceringsdatum = publiceringsdatum;
+    public void setPublishDateTime(LocalDateTime publishDateTime) {
+        this.publishDateTime = publishDateTime;
     }
 
-    // Övriga metoder som equals() och hashCode() bör också uppdateras för att hantera Long.
-
+    // Override equals and hashCode as before
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof NewsLetter)) return false;
 
-        Uppdatering that = (Uppdatering) o;
+        NewsLetter that = (NewsLetter) o;
 
-        if (uppdateringsId != that.getUppdateringsId()) return false;
-        if (titel != null ? !titel.equals(that.getTitel()) : that.getTitel() != null) return false;
-        if (beskrivning != null ? !beskrivning.equals(that.getBeskrivning()) : that.getBeskrivning() != null) return false;
-        if (publiceringsdatum != null ? !publiceringsdatum.equals(that.getPubliceringsdatum()) : that.getPubliceringsdatum() != null)
-            return false;
-
-        return true;
+        if (!getUppdateringsId().equals(that.getUppdateringsId())) return false;
+        if (!getTitel().equals(that.getTitel())) return false;
+        if (!getBeskrivning().equals(that.getBeskrivning())) return false;
+        if (!getPublishDateTime().equals(that.getPublishDateTime())) return false;
+        return getContent().equals(that.getContent());
     }
 
     @Override
     public int hashCode() {
-        int result = uppdateringsId != null ? uppdateringsId.hashCode() : 0;
-        result = 31 * result + (titel != null ? titel.hashCode() : 0);
-        result = 31 * result + (beskrivning != null ? beskrivning.hashCode() : 0);
-        result = 31 * result + (publiceringsdatum != null ? publiceringsdatum.hashCode() : 0);
+        int result = getUppdateringsId().hashCode();
+        result = 31 * result + getTitel().hashCode();
+        result = 31 * result + getBeskrivning().hashCode();
+        result = 31 * result + getPublishDateTime().hashCode();
+        result = 31 * result + getContent().hashCode();
         return result;
     }
 

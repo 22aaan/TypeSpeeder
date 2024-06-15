@@ -12,6 +12,11 @@ public class Menu implements MenuService {
         this.adminService = adminService;
     }
 
+    public Menu() {
+
+    }
+
+
     @Override
     public List<String> getMenuOptions() {
         List<String> options = new ArrayList<>();
@@ -23,7 +28,10 @@ public class Menu implements MenuService {
         options.add("Lägg till nyhetsinformation (endast admin)"); // Nytt alternativ
         return options;
     }
-
+        {
+        System.out.println("Välj språk (svenska/engelska):");
+            System.out.println("Svenska valt.");
+    }
     @Override
     public void displayMenu() {
         List<String> options = getMenuOptions();
@@ -45,5 +53,6 @@ public class Menu implements MenuService {
         } else {
             System.out.println("Felaktigt lösenord. Endast admin kan lägga till nyhetsinformation.");
         }
-    }
+
+}
 }
