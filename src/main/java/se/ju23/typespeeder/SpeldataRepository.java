@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpeldataRepository extends JpaRepository<Speldata, Long> {
-    List<Speldata> findAllByOrderByTidAsc(Pageable pageable);
-    List<Speldata> findAllByOrderByRattaSvarDesc(Pageable pageable);
+    List<Speldata> findAllByOrderByTidAsc();
+    List<Speldata> findAllByOrderByRattaSvarDesc();
     List<Speldata> findAllByOrderByFleraRattDesc(Pageable pageable);
     Optional<Speldata> findTopByAnvandareAndIsCorrectOrderBySpelDataIDDesc(Anvandare anvandare, boolean isCorrect);
 

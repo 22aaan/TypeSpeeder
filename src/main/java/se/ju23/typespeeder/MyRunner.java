@@ -105,6 +105,7 @@ public class MyRunner implements CommandLineRunner {
         }
     }
 
+
     private void showGameMenu(Scanner scanner, String spelnamn) {
         System.out.println(messages.getString("welcomeGame") + " " + spelnamn + "!");
         boolean stayInMenu = true;

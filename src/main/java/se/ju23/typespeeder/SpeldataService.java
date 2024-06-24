@@ -44,11 +44,11 @@ public class SpeldataService {
     }
 
     public List<Speldata> getSpeedRanking() {
-        return speldataRepository.findAllByOrderByTidAsc(PageRequest.of(0, 5));
+        return speldataRepository.findAllByOrderByTidAsc();
     }
 
     public List<Speldata> getCorrectAnswersRanking() {
-        return speldataRepository.findAllByOrderByRattaSvarDesc(PageRequest.of(0, 5));
+        return speldataRepository.findAllByOrderByRattaSvarDesc();
     }
 
     public List<Spelresultat> getRankingByFleraRatt() {

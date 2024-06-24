@@ -26,8 +26,8 @@ public class UserService {
         return true;
     }
 
-    public Optional<Anvandare> loginUser(String username, String password) {
-        return anvandareRepository.findByAnvandarnamnAndLosenord(username, password);
+    public Optional<Anvandare> loginUser(String anvandarnamn, String losenord) {
+        return anvandareRepository.findByAnvandarnamnAndLosenord(anvandarnamn, losenord);
     }
 
     public boolean updateUser(Long anvandarID, String newAnvandarnamn, String newLosenord, String newSpelnamn) {
