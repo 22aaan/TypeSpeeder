@@ -22,7 +22,8 @@ public class MyRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
+            boolean running = true;
+            while (running) {
                 selectLanguage(scanner); // Lägg till språkval här
 
                 boolean exit = false;
@@ -52,6 +53,7 @@ public class MyRunner implements CommandLineRunner {
                         case "5":
                             System.out.println(messages.getString("exitProgram"));
                             exit = true;
+                            running = false; // Lägg till denna rad för att avsluta programmet
                             break;
                         default:
                             System.out.println(messages.getString("invalidChoice"));
@@ -61,6 +63,7 @@ public class MyRunner implements CommandLineRunner {
             }
         }
     }
+
 
     private void selectLanguage(Scanner scanner) {
         System.out.println("1. English\n2. Svenska");
