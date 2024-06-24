@@ -89,10 +89,10 @@ public class Anvandare {
 
     private void updateLevel() {
         if (this.poang == null) {
-            this.poang = 0; // Ensure poang is not null.
+            this.poang = 0;
         }
         if (this.level == null) {
-            this.level = 1; // Ensure level is not null.
+            this.level = 1;
         }
 
         int newLevel = 1 + this.poang / 6;
@@ -105,7 +105,7 @@ public class Anvandare {
         if (this.poang == null) {
             this.poang = 0;
         }
-        this.poang = Math.max(this.poang - pointsToRemove, 0); // Säkerställ att poäng inte går under 0
+        this.poang = Math.max(this.poang - pointsToRemove, 0);
     }
 
 

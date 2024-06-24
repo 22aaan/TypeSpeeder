@@ -2,6 +2,8 @@ package se.ju23.typespeeder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -16,8 +18,9 @@ public class UserService {
             return false;
         }
 
+        String nyAnvandareStoraBokstavar = anvandarnamn.toUpperCase(Locale.ROOT);
         Anvandare nyAnvandare = new Anvandare();
-        nyAnvandare.setAnvandarnamn(anvandarnamn);
+        nyAnvandare.setAnvandarnamn(nyAnvandareStoraBokstavar);
         nyAnvandare.setLosenord(losenord);
         nyAnvandare.setSpelnamn(spelnamn);
         nyAnvandare.setPoang(0);
@@ -27,8 +30,16 @@ public class UserService {
     }
 
     public Optional<Anvandare> loginUser(String anvandarnamn, String losenord) {
-        return anvandareRepository.findByAnvandarnamnAndLosenord(anvandarnamn, losenord);
+        Optional<Anvandare> userOptional = anvandareRepository.findByAnvandarnamn(anvandarnamn);
+        if (userOptional.isPresent()) {
+            Anvandare user = userOptional.get();
+            if (user.getAnvandarnamn().equals(anvandarnamn) && user.getLosenord().equals(losenord)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
     }
+
 
     public boolean updateUser(Long anvandarID, String newAnvandarnamn, String newLosenord, String newSpelnamn) {
         Optional<Anvandare> anvandareOptional = anvandareRepository.findById(anvandarID);
